@@ -573,13 +573,10 @@ static void gb_connection_unbind_protocol(struct gb_connection *connection)
 
 void gb_connection_error_accounting(struct gb_connection *connection, int ret)
 {
-	struct gb_host_device *hd = NULL;
-
-	if (connection)
-		hd = connection->hd;
+	struct gb_host_device *hd = connection->hd;
 
 	/* If no recovery support, nothing to really account */
-	if (!hd || !hd->driver || !hd->driver->recovery || !hd->max_timeouts)
+	if (!hd->driver->recovery || !hd->max_timeouts)
 		return;
 
 	/* Anything other than timeout means we got a response */

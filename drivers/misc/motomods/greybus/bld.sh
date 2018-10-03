@@ -1,1 +1,1 @@
-KERNELDIR=../kernel-msm make ARCH=arm64 module
+KERNELDIR=$ANDROID_PRODUCT_OUT/obj/KERNEL_OBJ KERNELVER=3.4.0 make CROSS_COMPILE=arm-eabi- ARCH=arm module
