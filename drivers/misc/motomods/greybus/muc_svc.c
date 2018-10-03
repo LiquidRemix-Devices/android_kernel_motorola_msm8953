@@ -26,6 +26,7 @@
 
 #include "mods_protocols.h"
 #include "muc.h"
+#include "muc_attach.h"
 #include "muc_svc.h"
 #include "mods_nw.h"
 
@@ -1974,14 +1975,15 @@ static int muc_svc_send_test_mode(struct mods_dl_device *mods_dev, uint32_t val)
 	return 0;
 }
 
-static int muc_svc_create_hotplug_work(struct mods_dl_device *mods_dev)
+static struct muc_svc_hotplug_work *
+muc_svc_create_hotplug_work(struct mods_dl_device *mods_dev)
 {
 	struct muc_svc_hotplug_work *hpw;
 	int ret;
 
 	hpw = kzalloc(sizeof(*hpw), GFP_KERNEL);
 	if (!hpw)
-		return -ENOMEM;
+		return ERR_PTR(-ENOMEM);
 
 	hpw->dld = mods_dev;
 	INIT_WORK(&hpw->work, muc_svc_attach_work);
@@ -2038,38 +2040,36 @@ static int muc_svc_create_hotplug_work(struct mods_dl_device *mods_dev)
 	if (MB_CONTROL_SUPPORTS(mods_dev, GET_PWRUP_REASON))
 		muc_svc_get_pwrup_reason(svc_dd->dld, mods_dev);
 
-	mods_dev->hpw = hpw;
-
 	ret = muc_svc_get_manifest(mods_dev, mods_dev->intf_id);
 	if (ret)
-		goto clear_hpw;
+		goto free_route;
 
 	muc_svc_destroy_control_route(mods_dev->intf_id,
 				mods_dev->intf_id, GB_CONTROL_CPORT_ID);
 
-	return 0;
+	return hpw;
 
-clear_hpw:
-	mods_dev->hpw = NULL;
 free_route:
 	muc_svc_destroy_control_route(mods_dev->intf_id,
 				mods_dev->intf_id, GB_CONTROL_CPORT_ID);
 free_hpw:
 	kfree(hpw);
 
-	return ret;
+	return ERR_PTR(ret);
 }
 
 static int muc_svc_generate_hotplug(struct mods_dl_device *mods_dev)
 {
-	int ret;
+	struct muc_svc_hotplug_work *hpw;
 
-	ret = muc_svc_create_hotplug_work(mods_dev);
-	if (ret)
-		return ret;
+	hpw = muc_svc_create_hotplug_work(mods_dev);
+	if (IS_ERR(hpw))
+		return PTR_ERR(hpw);
+
+	mods_dev->hpw = hpw;
 
 	if (svc_dd->authenticate == false)
-		queue_work(svc_dd->wq, &mods_dev->hpw->work);
+		queue_work(svc_dd->wq, &hpw->work);
 
 	return 0;
 }

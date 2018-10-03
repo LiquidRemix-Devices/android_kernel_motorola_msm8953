@@ -39,6 +39,7 @@
 #include "mods_uart.h"
 #include "mods_uart_pm.h"
 #include "muc.h"
+#include "muc_attach.h"
 
 #define MAX_PARTITION_NAME           (16)
 
@@ -1083,11 +1084,11 @@ static int apba_compare_partition(struct apba_ctrl *ctrl,
 	unsigned long cur = 0;
 	size_t readlen;
 
-	tftf = kmalloc(PAGE_SIZE, GFP_KERNEL | GFP_DMA);
+	tftf = kmalloc(PAGE_SIZE, GFP_KERNEL);
 	if (!tftf)
 		goto skip_compare;
 
-	buf = kmalloc(PAGE_SIZE, GFP_KERNEL | GFP_DMA);
+	buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
 	if (!buf)
 		goto cleanup;
 
@@ -1238,7 +1239,7 @@ static int apba_flash_partition(struct apba_ctrl *ctrl,
 		goto cleanup;
 	}
 
-	buffer = kzalloc(PAGE_SIZE, GFP_KERNEL | GFP_DMA);
+	buffer = kzalloc(PAGE_SIZE, GFP_KERNEL);
 	if (!buffer) {
 		err = -ENOMEM;
 		goto cleanup;

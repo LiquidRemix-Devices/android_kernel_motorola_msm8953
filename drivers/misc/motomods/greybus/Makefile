@@ -46,7 +46,6 @@ gb-light-y := light.o
 gb-raw-y := raw.o
 gb-hid-y := hid.o
 gb-es2-y := es2.o
-gbsim-mods-sim-y := muc_sim.o
 gb-db3-y := db3-platform.o
 gb-camera-y := camera.o
 gb-vendor-moto-y := vendor_moto.o
@@ -69,7 +68,6 @@ obj-y += gb-hid.o
 obj-y += gb-raw.o
 # Remove the ES1/2 and db3 host device drivers
 #obj-y += gb-es2.o
-obj-y += gbsim-mods-sim.o
 #obj-y += gb-db3.o
 #obj-y += gb-camera.o
 obj-y += gb-mods.o

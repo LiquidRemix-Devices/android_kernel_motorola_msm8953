@@ -26,6 +26,7 @@
 
 #include "mods_nw.h"
 #include "muc.h"
+#include "muc_attach.h"
 #include "muc_svc.h"
 
 /* Protocol version supported by this driver */
