@@ -724,18 +724,6 @@ config DTV_FC8300
 	help
 	  Enable/disable FC8300 DTV module support
 
-config V4L2_HAL
-	tristate "v4l2 hal module support"
-	default n
-	help
-	  Enable/disable V4L2 HAL module support
-
-config MOD_GREYBUS
-	tristate "Moto MOD Greybus support"
-	default n
-	help
-	  Enable/disable Moto MOD Greybus support
-
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"
